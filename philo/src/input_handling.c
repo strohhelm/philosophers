@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:40:11 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/17 19:21:07 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/06/18 17:44:57 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ void	ft_free(t_input *data, int j)
 		pthread_mutex_destroy(&data->forks[i++]);
 	}
 	free(data->group);
-	free(data->spoon);
 	free(data->forks);
 	return ;
 }

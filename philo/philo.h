@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 16:12:08 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/17 19:22:55 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/06/18 17:50:04 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,23 +27,19 @@
 
 typedef pthread_mutex_t	t_mutex;
 
-typedef struct s_eating_utensils {
-	t_mutex		*l_fork;
-	t_mutex		*r_fork;
-	int			l_spoon;
-	int			r_spoon;
-}	t_cutlery;
 
 typedef struct s_philosopher {
 	pthread_t	id;
 	int			nb;
-	t_cutlery	u;
+	t_mutex		*l_fork;
+	t_mutex		*r_fork;
 	long		eat_time;
 	long		sleep_time;
 	long		time_to_die;
 	long		time_of_death;
 	int			times_must_eat;
 	int			*end_flag;
+	t_mutex		*p_lock;
 }	t_philo;
 
 typedef struct s_input {
@@ -52,8 +48,8 @@ typedef struct s_input {
 	long		time_to_eat;
 	long		time_to_sleep;
 	int			times_must_eat;
+	t_mutex		p_lock;
 	t_mutex		*forks;
-	int			*spoon;
 	t_philo		*group;
 	pthread_t	deathwatch;
 	int			end_flag;
@@ -65,8 +61,10 @@ int		ft_atoi(char *str);
 long	get_time(void);
 void	ft_free(t_input *data, int j);
 int		allocate_stuff(t_input *data);
-void	unlock_both(t_cutlery *utils);
-void	think(t_cutlery *utils, int nb, int *end);
+void	unlock_both(t_philo *philo);
+void	think(t_philo *philo, long wait);
 void	eat(t_philo *philo, int *local_end);
+void	safe_printf(char *s, long time, int nb, t_mutex *p_lock);
+int		ft_sleep(t_philo *philo);
 
 #endif

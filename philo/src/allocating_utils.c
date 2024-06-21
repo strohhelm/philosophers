@@ -1,33 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   allocating_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/10 16:16:04 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/21 17:46:19 by pstrohal         ###   ########.fr       */
+/*   Created: 2024/06/20 12:55:51 by pstrohal          #+#    #+#             */
+/*   Updated: 2024/06/21 17:05:30 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
 
-int	main(int argc, char *argv[])
+void	wait_for_creation(t_input *data)
 {
-	t_input			data;
-	int				i;
+	int	i;
 
-	if (!(argc == 5 || argc == 6))
-		return (printf("Wrong amount of arguments!\n"), 1);
-	if (initialize_input(argc, argv, &data))
-		return (printf("INPUT ERROR\n"), 1);
-	if (allocate_stuff(&data))
-		return (1);
-	init_group(&data);
-	if (create_threads(&data))
-		return (1);
 	i = 0;
+	while (i < data->nb_of_philos)
+	{
+		if (data->group[i].time_of_death. != -1)
+			i++;
+		else
+			usleep(10);
+	}
+	return ;
+}
 
-	ft_free(&data, data.nb_of_philos);
-	return (0);
+int	*allocate_value_array(int nb_of_philos)
+{
+	int	i;
+	int	*arr;
+
+	arr = (int *)malloc(sizeof(int) * nb_of_philos);
+	if (!arr)
+		return (NULL);
+	i = -1;
+	while (++i < nb_of_philos)
+		arr[i] = i;
+	return (arr);
 }

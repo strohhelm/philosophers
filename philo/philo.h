@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 16:12:08 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/18 17:50:04 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/06/21 17:39:49 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,19 +27,45 @@
 
 typedef pthread_mutex_t	t_mutex;
 
+typedef enum e_compare {
+	EQUAL,
+	SMALLER,
+	BIGGER,
+}	t_comp;
+
+typedef enum e_succes {
+	SUCCESS,
+	ERROR,
+}	t_outcome;
+
+typedef enum e_flagstate {
+	DOWN,
+	UP,
+	SIDEWAYS,
+	USELESS,
+}	t_flag_state;
+
+typedef struct s_protected_value {
+	long	value;
+	t_mutex	lock;
+}	t_value;
+
 
 typedef struct s_philosopher {
 	pthread_t	id;
-	int			nb;
+	t_value		nb;
 	t_mutex		*l_fork;
 	t_mutex		*r_fork;
 	long		eat_time;
 	long		sleep_time;
 	long		time_to_die;
-	long		time_of_death;
+	t_value		time_of_death;
 	int			times_must_eat;
-	int			*end_flag;
-	t_mutex		*p_lock;
+	t_value		*end_flag;
+	t_value		local_end;
+	long		curr_time;
+	t_mutex		*print;
+	t_mutex		*time;
 }	t_philo;
 
 typedef struct s_input {
@@ -48,23 +74,58 @@ typedef struct s_input {
 	long		time_to_eat;
 	long		time_to_sleep;
 	int			times_must_eat;
-	t_mutex		p_lock;
+	t_mutex		print;
+	t_mutex		time;
 	t_mutex		*forks;
 	t_philo		*group;
 	pthread_t	deathwatch;
-	int			end_flag;
+	t_value		end_flag;
 }	t_input;
 
+/*		allocating_and_initializing		*/
 
-int		initialize_input(int argc, char **argv, t_input *philos);
-int		ft_atoi(char *str);
-long	get_time(void);
-void	ft_free(t_input *data, int j);
 int		allocate_stuff(t_input *data);
-void	unlock_both(t_philo *philo);
-void	think(t_philo *philo, long wait);
-void	eat(t_philo *philo, int *local_end);
-void	safe_printf(char *s, long time, int nb, t_mutex *p_lock);
+int		create_threads(t_input *data);
+void	init_group(t_input *data);
+int		init_rest_mutexes(t_input *data, int i);
+
+/*		allocating_utils				*/
+
+void	wait_for_creation(t_input *data);
+int		*allocate_value_array(int nb_of_philos);
+
+/*		input_handling					*/
+
+int		validate_argv(int argc, char **argv);
+int		initialize_input(int argc, char **argv, t_input *philos);
+void	ft_free(t_input *data, int j);
+
+/*		safety_functions				*/
+
+void	value_increase(t_value *to_change, long amount);
+int		value_compare(t_value *to_check, long against);
+int		flag_check(t_value *flag);
+void	flag_set(t_value *flag, int value);
+
+
+/*		thread_functions				*/
+
+void	lock(pthread_mutex_t *fork, t_philo *p);
+void	think(t_philo *philo, int *local_end);
+void	eat(t_philo *philo);
 int		ft_sleep(t_philo *philo);
+void	local_end_check(t_input *data);
+
+/*		thread_routines					*/
+
+void	*philos(void *arg);
+void	*death_watching(void *arg);
+
+/*		utils							*/
+int		ft_atoi(char *str);
+void	safe_printf(char *s, long time, int nb, t_mutex *p_lock);
+long	get_time(t_mutex *t_lock);
+void	unlock_both(t_philo *philo);
+
 
 #endif

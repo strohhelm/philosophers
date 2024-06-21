@@ -4,7 +4,10 @@ CC = cc
 
 CFILES	:=	src/main.c\
 			src/input_handling.c\
+			src/allocating_and_initiating.c\
+			src/allocating_utils.c\
 			src/thread_functions.c\
+			src/thread_routines.c\
 			src/utils.c
 
 OBJS	:= $(patsubst src/%.c, obj/%.o,$(CFILES))

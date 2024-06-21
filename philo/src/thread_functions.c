@@ -6,32 +6,33 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:06:52 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/18 17:50:42 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/06/21 12:26:41 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
 
-void	lock(pthread_mutex_t *fork, int nb, t_mutex *p_lock)
+void	lock(pthread_mutex_t *fork, t_philo *p)
 {
 	pthread_mutex_lock(fork);
-	safe_printf("has taken a fork", get_time(), nb, p_lock);
+	if (*(p->end_flag) == 0)
+		safe_printf("has taken a fork", get_time(p->time), p->nb, p->print);
 	return ;
 }
 
-void	think(t_philo *philo, long wait)
+void	think(t_philo *philo, int *local_end)
 {
-	safe_printf("is thinking", get_time(), philo->nb, philo->p_lock);
-	usleep(wait);
+	safe_printf("is thinking", get_time(philo->time), philo->nb, philo->print);
 	if (*(philo->end_flag) != 0)
 		return ;
-	lock(philo->l_fork, philo->nb, philo->p_lock);
-	if (*(philo->end_flag) != 0)
+	lock(philo->l_fork, philo);
+	if (*(philo->end_flag) != 0 || philo->l_fork == philo->r_fork)
 	{
 		pthread_mutex_unlock(philo->l_fork);
+		*local_end = -1;
 		return ;
 	}
-	lock(philo->r_fork, philo->nb, philo->p_lock);
+	lock(philo->r_fork, philo);
 	if (*(philo->end_flag) != 0)
 	{
 		unlock_both(philo);
@@ -40,27 +41,40 @@ void	think(t_philo *philo, long wait)
 	return ;
 }
 
-void	eat(t_philo *philo, int *local_end)
+void	eat(t_philo *philo)
 {
-	int		sleep_check;
-
-	safe_printf("is eating", get_time(), philo->nb, philo->p_lock);
+	philo->times_must_eat--;
 	philo->time_of_death += philo->time_to_die;
-	sleep_check = usleep(philo->eat_time);
+	safe_printf("is eating", get_time(philo->time), philo->nb, philo->print);
+	usleep(philo->eat_time);
 	unlock_both(philo);
-	if (philo->times_must_eat > 0)
-		philo->times_must_eat--;
-	if (philo->times_must_eat == 0 || sleep_check < 0)
-		*local_end = 1;
 }
 
 int	ft_sleep(t_philo *philo)
 {
-	safe_printf("is sleeping", get_time(), philo->nb, philo->p_lock);
+	safe_printf("is sleeping", get_time(philo->time), philo->nb, philo->print);
 	if (*(philo->end_flag) == 0)
 	{
 		usleep(philo->sleep_time);
 		return (1);
 	}
 	return (0);
+}
+
+void	local_end_check(t_input *data)
+{
+	int	i ;
+	int	j;
+
+	i = 0;
+	j = 0;
+	while (i < data->nb_of_philos)
+	{
+		if (data->group[i].local_end == 1)
+			j++;
+		i++;
+	}
+	if (j == i)
+		data->end_flag = 1;
+	return ;
 }

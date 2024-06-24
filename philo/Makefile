@@ -2,10 +2,12 @@ NAME	:= philo
 CFLAGS	:= -Wextra -Wall -Werror 
 CC = cc
 
-CFILES	:=	src/main.c\
-			src/input_handling.c\
-			src/allocating_and_initiating.c\
+CFILES	:=	src/allocating_and_initiating.c\
 			src/allocating_utils.c\
+			src/destroy_and_free.c\
+			src/input_handling.c\
+			src/main.c\
+			src/safety_functions.c\
 			src/thread_functions.c\
 			src/thread_routines.c\
 			src/utils.c

@@ -6,75 +6,97 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:06:52 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/21 12:26:41 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/06/24 17:19:16 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
 
-void	lock(pthread_mutex_t *fork, t_philo *p)
+int	lock(pthread_mutex_t *fork, t_philo *p)
 {
-	pthread_mutex_lock(fork);
-	if (*(p->end_flag) == 0)
-		safe_printf("has taken a fork", get_time(p->time), p->nb, p->print);
-	return ;
+	int	e;
+
+	e = 0;
+	if (pthread_mutex_lock(fork) != SUCCESS)
+	{
+		flag_set(p->end_flag, 1);
+		return (LOCK_ERROR);
+	}
+	if (flag_check(p->end_flag) == DOWN)
+		e = safe_printf("has taken a fork", get_time(p->time), p->nb, p->print);
+	if (e == ERROR)
+	{
+		flag_set(p->end_flag, 1);
+		return (ERROR);
+	}
+	return (SUCCESS);
 }
 
-void	think(t_philo *philo, int *local_end)
+int	thinking(t_philo *philo, int i)
 {
-	safe_printf("is thinking", get_time(philo->time), philo->nb, philo->print);
-	if (*(philo->end_flag) != 0)
-		return ;
-	lock(philo->l_fork, philo);
-	if (*(philo->end_flag) != 0 || philo->l_fork == philo->r_fork)
+	if (safe_printf("is thinking", get_time(philo->time), philo->nb,
+			philo->print))
+		return (ERROR);
+	if (i == 1 && philo->nb % 2 == 0)
 	{
-		pthread_mutex_unlock(philo->l_fork);
-		*local_end = -1;
-		return ;
+		usleep(philo->eat_time / 2);
 	}
-	lock(philo->r_fork, philo);
-	if (*(philo->end_flag) != 0)
+	if (flag_check(philo->end_flag) == UP)
 	{
-		unlock_both(philo);
-		return ;
+		return (ERROR);
 	}
-	return ;
+	if (lock(philo->l_fork, philo) == LOCK_ERROR)
+	{
+		return (ERROR);
+	}
+	if (flag_check(philo->end_flag) == UP || philo->l_fork == philo->r_fork)
+	{
+		return (pthread_mutex_unlock(philo->l_fork), ERROR);
+	}
+	if (lock(philo->r_fork, philo) == ERROR)
+	{
+		return (unlock_both(philo), ERROR);
+	}
+	return (SUCCESS);
 }
 
-void	eat(t_philo *philo)
+int	eating(t_philo *philo)
 {
-	philo->times_must_eat--;
-	philo->time_of_death += philo->time_to_die;
-	safe_printf("is eating", get_time(philo->time), philo->nb, philo->print);
+	if (flag_check(philo->end_flag) == UP)
+		return (unlock_both(philo), ERROR);
+	if (philo->times_must_eat > 0)
+	{
+		philo->times_must_eat--;
+	}
+	val_set(&philo->time_of_death,
+		val_get(&philo->time_of_death) + philo->time_to_die);
+	if (flag_check(philo->end_flag) == UP)
+	{
+		return (unlock_both(philo), ERROR);
+	}
+	if (safe_printf("is eating", get_time(philo->time), philo->nb,
+			philo->print) == ERROR)
+		return (unlock_both(philo), ERROR);
+	if (philo->times_must_eat == 0)
+	{
+		flag_set(&philo->local_end, 1);
+		return (unlock_both(philo), ERROR);
+	}
 	usleep(philo->eat_time);
 	unlock_both(philo);
+	return (SUCCESS);
 }
 
-int	ft_sleep(t_philo *philo)
+int	sleeping(t_philo *philo)
 {
-	safe_printf("is sleeping", get_time(philo->time), philo->nb, philo->print);
-	if (*(philo->end_flag) == 0)
+	if (flag_check(philo->end_flag) == UP)
+		return (ERROR);
+	if (safe_printf("is sleeping", get_time(philo->time),
+			philo->nb, philo->print))
 	{
-		usleep(philo->sleep_time);
-		return (1);
+		return (ERROR);
 	}
-	return (0);
+	usleep(philo->sleep_time);
+	return (SUCCESS);
 }
 
-void	local_end_check(t_input *data)
-{
-	int	i ;
-	int	j;
-
-	i = 0;
-	j = 0;
-	while (i < data->nb_of_philos)
-	{
-		if (data->group[i].local_end == 1)
-			j++;
-		i++;
-	}
-	if (j == i)
-		data->end_flag = 1;
-	return ;
-}

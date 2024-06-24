@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:45:43 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/21 16:49:48 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/06/24 16:06:53 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,14 @@ int	ft_atoi(char *str)
 	return (ms);
 }
 
-void	safe_printf(char *s, long time, int nb, t_mutex *p_lock)
+int	safe_printf(char *s, long time, int nb, t_mutex *p_lock)
 {
-	pthread_mutex_lock(p_lock);
+	if (pthread_mutex_lock(p_lock) != SUCCESS)
+		return (ERROR);
 	printf("%ld %d %s\n", time / 1000, nb, s);
-	pthread_mutex_unlock(p_lock);
-	return ;
+	if (pthread_mutex_unlock(p_lock) != SUCCESS)
+		return (ERROR);
+	return (SUCCESS);
 }
 
 long	get_time(t_mutex *t_lock)
@@ -58,3 +60,23 @@ void	unlock_both(t_philo *philo)
 	pthread_mutex_unlock(philo->r_fork);
 }
 
+int	local_end_check(t_input *data)
+{
+	int	i ;
+	int	j;
+
+	i = 0;
+	j = 0;
+	while (i < data->nb_of_philos)
+	{
+		if (flag_check(&data->group[i].local_end) == UP)
+			j++;
+		i++;
+	}
+	if (j == i)
+	{
+		flag_set(&data->end_flag, 1);
+		return (ERROR);
+	}
+	return (SUCCESS);
+}

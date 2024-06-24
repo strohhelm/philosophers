@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 16:12:08 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/21 17:39:49 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/06/24 17:17:29 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,24 +36,23 @@ typedef enum e_compare {
 typedef enum e_succes {
 	SUCCESS,
 	ERROR,
+	LOCK_ERROR,
 }	t_outcome;
 
 typedef enum e_flagstate {
 	DOWN,
 	UP,
-	SIDEWAYS,
-	USELESS,
 }	t_flag_state;
 
 typedef struct s_protected_value {
 	long	value;
 	t_mutex	lock;
+	int		init_flag;
 }	t_value;
-
 
 typedef struct s_philosopher {
 	pthread_t	id;
-	t_value		nb;
+	int			nb;
 	t_mutex		*l_fork;
 	t_mutex		*r_fork;
 	long		eat_time;
@@ -77,6 +76,7 @@ typedef struct s_input {
 	t_mutex		print;
 	t_mutex		time;
 	t_mutex		*forks;
+	int			*fork_init;
 	t_philo		*group;
 	pthread_t	deathwatch;
 	t_value		end_flag;
@@ -87,34 +87,40 @@ typedef struct s_input {
 int		allocate_stuff(t_input *data);
 int		create_threads(t_input *data);
 void	init_group(t_input *data);
-int		init_rest_mutexes(t_input *data, int i);
+int		init_rest_mutexes(t_input *data);
 
 /*		allocating_utils				*/
 
 void	wait_for_creation(t_input *data);
 int		*allocate_value_array(int nb_of_philos);
+void	zero_mutex_indicators(t_input *data);
+
+/*		destro_and_free					*/
+
+void	ft_free(t_input *data, int j);
+void	p_dest(t_input *data, int i);
 
 /*		input_handling					*/
 
 int		validate_argv(int argc, char **argv);
 int		initialize_input(int argc, char **argv, t_input *philos);
-void	ft_free(t_input *data, int j);
+int		wait_for_philos(t_input *data);
 
 /*		safety_functions				*/
 
-void	value_increase(t_value *to_change, long amount);
-int		value_compare(t_value *to_check, long against);
+void	val_set(t_value *to_change, long amount);
+int		val_comp(t_value *to_check, long against);
+int		val_get(t_value *value);
 int		flag_check(t_value *flag);
 void	flag_set(t_value *flag, int value);
 
-
 /*		thread_functions				*/
 
-void	lock(pthread_mutex_t *fork, t_philo *p);
-void	think(t_philo *philo, int *local_end);
-void	eat(t_philo *philo);
-int		ft_sleep(t_philo *philo);
-void	local_end_check(t_input *data);
+int		lock(pthread_mutex_t *fork, t_philo *p);
+int		thinking(t_philo *philo, int i);
+int		eating(t_philo *philo);
+int		sleeping(t_philo *philo);
+int		local_end_check(t_input *data);
 
 /*		thread_routines					*/
 
@@ -123,9 +129,8 @@ void	*death_watching(void *arg);
 
 /*		utils							*/
 int		ft_atoi(char *str);
-void	safe_printf(char *s, long time, int nb, t_mutex *p_lock);
+int		safe_printf(char *s, long time, int nb, t_mutex *p_lock);
 long	get_time(t_mutex *t_lock);
 void	unlock_both(t_philo *philo);
-
 
 #endif

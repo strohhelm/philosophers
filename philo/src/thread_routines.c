@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 13:10:38 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/24 17:19:00 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/06/25 14:57:39 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	*death_watching(void *arg)
 	long		time;
 
 	data = (t_input *)arg;
-	while (flag_check(&data->end_flag) == DOWN)
+	while (flag_check(&data->end_flag) == DOWN && data->nb_of_philos > 0)
 	{
 		i = 0;
 		while (i < data->nb_of_philos && flag_check(&data->end_flag) == DOWN)

@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:06:52 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/25 18:46:59 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/06/25 20:23:21 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,28 +62,29 @@ int	thinking(t_philo *philo, int i)
 
 int	eating(t_philo *philo)
 {
-	if (flag_check(philo->end_flag) == UP)
+	if (flag_check(philo->end_flag) == UP
+		&& val_comp(&philo->time_of_death, get_time(philo->time)) != BIGGER)
+		return (unlock_both(philo), ERROR);
+	if (safe_printf("is eating", get_time(philo->time), philo->nb,
+			philo->print) == ERROR)
 		return (unlock_both(philo), ERROR);
 	if (philo->times_must_eat > 0)
 	{
 		philo->times_must_eat--;
 	}
-	val_set(&philo->time_of_death,
-		val_get(&philo->time_of_death) + philo->time_to_die);
 	if (flag_check(philo->end_flag) == UP)
 	{
 		return (unlock_both(philo), ERROR);
 	}
-	if (safe_printf("is eating", get_time(philo->time), philo->nb,
-			philo->print) == ERROR)
-		return (unlock_both(philo), ERROR);
+	val_set(&philo->time_of_death,
+		val_get(&philo->time_of_death) + philo->time_to_die);
+	if (philo->eat_time == 0)
+		usleep(100);
+	usleep(philo->eat_time);
 	if (philo->times_must_eat == 0)
 	{
 		flag_set(&philo->local_end, 1);
 	}
-	if (philo->eat_time == 0)
-		usleep(100);
-	usleep(philo->eat_time);
 	unlock_both(philo);
 	return (SUCCESS);
 }

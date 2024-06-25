@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:40:11 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/25 10:20:00 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/06/25 19:00:42 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,5 +44,7 @@ int	initialize_input(int argc, char **argv, t_input *data)
 		data->times_must_eat = ft_atoi(argv[5]);
 	else
 		data->times_must_eat = -1;
+	if (data->nb_of_philos == 0)
+		return (ERROR);
 	return (SUCCESS);
 }

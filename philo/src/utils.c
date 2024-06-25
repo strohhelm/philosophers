@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:45:43 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/24 16:06:53 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/06/25 18:05:22 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	safe_printf(char *s, long time, int nb, t_mutex *p_lock)
 {
 	if (pthread_mutex_lock(p_lock) != SUCCESS)
 		return (ERROR);
-	printf("%ld %d %s\n", time / 1000, nb, s);
+	printf("%ld %d %s\n", time /1000, nb, s);
 	if (pthread_mutex_unlock(p_lock) != SUCCESS)
 		return (ERROR);
 	return (SUCCESS);

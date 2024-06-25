@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 13:10:38 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/25 14:57:39 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/06/25 17:57:58 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	*philos(void *arg)
 	val_set(&philo->time_of_death, get_time(philo->time) + philo->time_to_die);
 	counter = 0;
 	while (!flag_check(philo->end_flag) && !flag_check(&philo->local_end)
-		&& philo->times_must_eat != 0)
+		&&philo->time_to_die > 0 && philo->times_must_eat != 0)
 	{
 		if (counter == 0)
 			i = 1;
@@ -36,6 +36,7 @@ void	*philos(void *arg)
 			return (NULL);
 		counter++;
 	}
+	if (val_comp(&philo->time_of_death, get_time(philo->time)) == BIGGER)
 	flag_set(&philo->local_end, 1);
 	return (NULL);
 }

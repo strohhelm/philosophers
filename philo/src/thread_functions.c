@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:06:52 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/25 11:41:22 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/06/25 18:05:03 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,6 @@ int	eating(t_philo *philo)
 	if (philo->times_must_eat == 0)
 	{
 		flag_set(&philo->local_end, 1);
-		return (unlock_both(philo), ERROR);
 	}
 	usleep(philo->eat_time);
 	unlock_both(philo);

@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 10:08:16 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/24 14:36:46 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/06/25 11:40:57 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ void	ft_free(t_input *data, int j)
 	p_dest(data, 3);
 	free(data->group);
 	free(data->forks);
+	free(data->fork_init);
 	return ;
 }
 

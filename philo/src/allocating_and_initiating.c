@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 12:41:39 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/24 16:46:29 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/06/25 10:23:44 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 
 int	allocate_stuff(t_input *data)
 {
-	int	i;
-
 	data->group = (t_philo *)malloc(sizeof(t_philo) * data->nb_of_philos);
 	if (!data->group)
 		return (printf("ERROR allocating philos\n"), ERROR);
@@ -26,7 +24,6 @@ int	allocate_stuff(t_input *data)
 	if (!data->fork_init)
 		return (printf("ERROR\n"), free(data->group), free(data->forks), ERROR);
 	zero_mutex_indicators(data);
-	i = 0;
 	if (pthread_mutex_init(&data->print, NULL))
 		return (free(data->group), free(data->forks), p_dest(data, 0), ERROR);
 	if (pthread_mutex_init(&data->time, NULL))
@@ -41,10 +38,8 @@ int	allocate_stuff(t_input *data)
 int	init_rest_mutexes(t_input *data)
 {
 	int	i;
-	int	j;
 
 	i = 0;
-	j = data->nb_of_philos;
 	while (i < data->nb_of_philos)
 	{
 		if (pthread_mutex_init(&data->forks[i], NULL))
@@ -105,6 +100,8 @@ void	init_group(t_input *data)
 		data->group[i].end_flag = &data->end_flag;
 		data->group[i].print = &data->print;
 		data->group[i].time = &data->time;
+		flag_set(&data->group[i].local_end, 0);
 		i++;
 	}
+	flag_set(&data->end_flag, 0);
 }

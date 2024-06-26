@@ -30,7 +30,6 @@ clean:
 
 fclean: clean
 	@rm -rf $(NAME)
-
 	@echo MAKING fclean...
 
 

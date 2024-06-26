@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:06:52 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/26 17:27:26 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/06/26 18:23:42 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 void	lock(pthread_mutex_t *fork, t_philo *p)
 {
-
 	pthread_mutex_lock(fork);
 	if (flag_check(p->end_flag) == DOWN)
 		safe_printf("has taken a fork", get_time(p->time), p);

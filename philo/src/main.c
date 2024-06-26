@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 16:16:04 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/24 09:20:04 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/06/26 15:18:45 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ int	main(int argc, char *argv[])
 		return (printf("INPUT ERROR\n"), ERROR);
 	if (allocate_stuff(&data) != SUCCESS)
 		return (ERROR);
-	init_group(&data);
+	if (init_group(&data) != SUCCESS)
+		return (ft_free(&data, data.nb_of_philos), ERROR);
 	if (create_threads(&data) != SUCCESS)
 		return (ERROR);
 	if (wait_for_philos(&data) != SUCCESS)

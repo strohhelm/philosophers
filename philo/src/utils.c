@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:45:43 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/26 14:28:28 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/06/26 17:48:47 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,15 +29,15 @@ int	ft_atoi(char *str)
 	return (ms);
 }
 
-int	safe_printf(char *s, long time, t_philo *philo)
+void	safe_printf(char *s, long time, t_philo *philo)
 {
-	if (pthread_mutex_lock(philo->print) != SUCCESS)
-		return (ERROR);
 	if (flag_check(philo->end_flag) == DOWN)
+	{
+		pthread_mutex_lock(philo->print);
 		printf("%ld %d %s\n", time / 1000, philo->nb, s);
-	if (pthread_mutex_unlock(philo->print) != SUCCESS)
-		return (ERROR);
-	return (SUCCESS);
+		pthread_mutex_unlock(philo->print);
+	}
+	return ;
 }
 
 long	get_time(t_mutex *t_lock)
@@ -76,9 +76,7 @@ int	local_end_check(t_input *data)
 	}
 	if (j == i)
 	{
-		pthread_mutex_lock(&data->print);
 		flag_set(&data->end_flag, 1);
-		pthread_mutex_unlock(&data->print);
 		return (ERROR);
 	}
 	return (SUCCESS);

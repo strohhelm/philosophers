@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 10:08:16 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/26 14:35:49 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/06/26 16:41:58 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ void	ft_free(t_input *data, int j)
 			pthread_mutex_destroy(&data->forks[i]);
 		if (data->group[i].local_end.init_flag != 0)
 			pthread_mutex_destroy(&data->group[i].local_end.lock);
-		if (data->group[i].time_of_death.init_flag != 0)
-			pthread_mutex_destroy(&data->group[i].time_of_death.lock);
+		if (data->group[i].time_of_last_meal.init_flag != 0)
+			pthread_mutex_destroy(&data->group[i].time_of_last_meal.lock);
 		i++;
 	}
 	p_dest(data, 3);

@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 12:55:51 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/24 14:26:51 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/06/26 16:42:59 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	wait_for_creation(t_input *data)
 	i = 0;
 	while (i < data->nb_of_philos)
 	{
-		if (val_comp(&data->group[i].time_of_death, -2) != EQUAL)
+		if (val_comp(&data->group[i].time_of_last_meal, -2) != EQUAL)
 			i++;
 		else
 			usleep(10);
@@ -50,7 +50,7 @@ void	zero_mutex_indicators(t_input *data)
 	{
 		data->fork_init[i] = 0;
 		data->group[i].local_end.init_flag = 0;
-		data->group[i].time_of_death.init_flag = 0;
+		data->group[i].time_of_last_meal.init_flag = 0;
 		i++;
 	}
 }

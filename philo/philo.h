@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 16:12:08 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/26 14:23:29 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/06/26 17:01:00 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,7 @@ typedef struct s_philosopher {
 	t_mutex		*r_fork;
 	long		eat_time;
 	long		sleep_time;
-	long		time_to_die;
-	t_value		time_of_death;
+	t_value		time_of_last_meal;
 	int			times_must_eat;
 	t_value		*end_flag;
 	t_value		local_end;
@@ -86,7 +85,7 @@ typedef struct s_input {
 
 int		allocate_stuff(t_input *data);
 int		create_threads(t_input *data);
-void	init_group(t_input *data);
+int		init_group(t_input *data);
 int		init_rest_mutexes(t_input *data);
 
 /*		allocating_utils				*/
@@ -116,7 +115,7 @@ void	flag_set(t_value *flag, int value);
 
 /*		thread_functions				*/
 
-int		lock(pthread_mutex_t *fork, t_philo *p);
+void	lock(pthread_mutex_t *fork, t_philo *p);
 int		thinking(t_philo *philo, int i);
 int		eating(t_philo *philo);
 int		sleeping(t_philo *philo);
@@ -129,7 +128,7 @@ void	*death_watching(void *arg);
 
 /*		utils							*/
 int		ft_atoi(char *str);
-int		safe_printf(char *s, long time, t_philo *philo);
+void	safe_printf(char *s, long time, t_philo *philo);
 long	get_time(t_mutex *t_lock);
 void	unlock_both(t_philo *philo);
 

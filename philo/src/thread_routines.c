@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 13:10:38 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/26 14:31:54 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/06/26 17:35:42 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,9 @@ void	*philos(void *arg)
 	int		i;
 
 	philo = (t_philo *)arg;
-	val_set(&philo->time_of_death, get_time(philo->time) + philo->time_to_die);
+	val_set(&philo->time_of_last_meal, get_time(philo->time));
 	counter = 0;
-	while (!flag_check(philo->end_flag) && !flag_check(&philo->local_end)
-		&&philo->time_to_die > 0 && philo->times_must_eat != 0)
+	while (flag_check(philo->end_flag) == DOWN)
 	{
 		if (counter == 0)
 			i = 1;
@@ -36,8 +35,6 @@ void	*philos(void *arg)
 			return (NULL);
 		counter++;
 	}
-	if (val_comp(&philo->time_of_death, get_time(philo->time)) == BIGGER)
-		flag_set(&philo->local_end, 1);
 	return (NULL);
 }
 
@@ -54,15 +51,15 @@ void	*death_watching(void *arg)
 		while (i < data->nb_of_philos && flag_check(&data->end_flag) == DOWN)
 		{
 			time = get_time(&data->time);
-			if (val_comp(&data->group[i].time_of_death, -2) == BIGGER)
+			if (val_comp(&data->group[i].time_of_last_meal, -2) != BIGGER)
+				;
+			else if (local_end_check(data) == ERROR)
+				break ;
+			else if (val_get(&data->group[i].time_of_last_meal)
+				< get_time(&data->time) - data->time_to_die)
 			{
-				if (local_end_check(data) == ERROR)
-					break ;
-				if (val_comp(&data->group[i].time_of_death, time) != BIGGER)
-				{
-					flag_set(&data->end_flag, 1);
-					safe_printf("died", time, &data->group[i]);
-				}
+				safe_printf("died", time, &data->group[i]);
+				flag_set(&data->end_flag, 1);
 			}
 			i++;
 		}

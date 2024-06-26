@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 16:12:08 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/25 20:12:58 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/06/26 14:23:29 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ void	*death_watching(void *arg);
 
 /*		utils							*/
 int		ft_atoi(char *str);
-int		safe_printf(char *s, long time, int nb, t_mutex *p_lock);
+int		safe_printf(char *s, long time, t_philo *philo);
 long	get_time(t_mutex *t_lock);
 void	unlock_both(t_philo *philo);
 

@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 13:10:38 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/25 18:44:13 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/06/26 14:31:54 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	*death_watching(void *arg)
 				if (val_comp(&data->group[i].time_of_death, time) != BIGGER)
 				{
 					flag_set(&data->end_flag, 1);
-					safe_printf("died", time, data->group[i].nb, &data->print);
+					safe_printf("died", time, &data->group[i]);
 				}
 			}
 			i++;

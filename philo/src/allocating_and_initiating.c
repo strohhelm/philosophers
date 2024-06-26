@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 12:41:39 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/25 10:23:44 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/06/26 14:40:30 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,8 @@ int	create_threads(t_input *data)
 	{
 		if (pthread_create(&data->group[*nb].id, NULL, &philos,
 				(void *)&data->group[*nb]))
-			return (printf("ERROR create thread %d\n", i), ft_free(data, j), 1);
+			return (safe_printf("ERROR create thread\n", get_time(&data->time),
+					&data->group[i]), ft_free(data, j), 1);
 		i++;
 		nb++;
 	}

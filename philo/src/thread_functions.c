@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:06:52 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/25 20:23:21 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/06/26 14:30:18 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	lock(pthread_mutex_t *fork, t_philo *p)
 		return (LOCK_ERROR);
 	}
 	if (flag_check(p->end_flag) == DOWN)
-		e = safe_printf("has taken a fork", get_time(p->time), p->nb, p->print);
+		e = safe_printf("has taken a fork", get_time(p->time), p);
 	if (e == ERROR)
 	{
 		flag_set(p->end_flag, 1);
@@ -34,8 +34,7 @@ int	lock(pthread_mutex_t *fork, t_philo *p)
 
 int	thinking(t_philo *philo, int i)
 {
-	if (safe_printf("is thinking", get_time(philo->time), philo->nb,
-			philo->print))
+	if (safe_printf("is thinking", get_time(philo->time), philo))
 		return (ERROR);
 	if (i == 1 && philo->nb % 2 == 0)
 	{
@@ -62,11 +61,9 @@ int	thinking(t_philo *philo, int i)
 
 int	eating(t_philo *philo)
 {
-	if (flag_check(philo->end_flag) == UP
-		&& val_comp(&philo->time_of_death, get_time(philo->time)) != BIGGER)
+	if (flag_check(philo->end_flag) == UP)
 		return (unlock_both(philo), ERROR);
-	if (safe_printf("is eating", get_time(philo->time), philo->nb,
-			philo->print) == ERROR)
+	if (safe_printf("is eating", get_time(philo->time), philo) == ERROR)
 		return (unlock_both(philo), ERROR);
 	if (philo->times_must_eat > 0)
 	{
@@ -93,8 +90,7 @@ int	sleeping(t_philo *philo)
 {
 	if (flag_check(philo->end_flag) == UP)
 		return (ERROR);
-	if (safe_printf("is sleeping", get_time(philo->time),
-			philo->nb, philo->print))
+	if (safe_printf("is sleeping", get_time(philo->time), philo))
 	{
 		return (ERROR);
 	}

@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:45:43 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/26 17:48:47 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/07/01 15:14:19 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	safe_printf(char *s, long time, t_philo *philo)
 	if (flag_check(philo->end_flag) == DOWN)
 	{
 		pthread_mutex_lock(philo->print);
-		printf("%ld %d %s\n", time / 1000, philo->nb, s);
+		printf("%ld %d %s\n", time, philo->nb, s);
 		pthread_mutex_unlock(philo->print);
 	}
 	return ;

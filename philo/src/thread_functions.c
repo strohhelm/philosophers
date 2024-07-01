@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:06:52 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/26 18:23:42 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/07/01 15:06:54 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,13 @@ int	thinking(t_philo *philo, int i)
 
 int	eating(t_philo *philo)
 {
+	long	time;
+
+	time = get_time(philo->time);
+	val_set(&philo->time_of_last_meal, time);
 	if (flag_check(philo->end_flag) == UP)
 		return (unlock_both(philo), ERROR);
-	safe_printf("is eating", get_time(philo->time), philo);
-	val_set(&philo->time_of_last_meal, get_time(philo->time));
+	safe_printf("is eating", time, philo);
 	if (philo->times_must_eat > 0)
 	{
 		philo->times_must_eat--;
@@ -59,7 +62,6 @@ int	eating(t_philo *philo)
 
 int	sleeping(t_philo *philo)
 {
-	usleep(100);
 	safe_printf("is sleeping", get_time(philo->time), philo);
 	if (philo->sleep_time == 0)
 		usleep(100);

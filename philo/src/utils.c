@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:45:43 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/07/01 15:14:19 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/07/02 18:33:29 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,16 +29,30 @@ int	ft_atoi(char *str)
 	return (ms);
 }
 
-void	safe_printf(char *s, long time, t_philo *philo)
+void	safe_printf(char *s, long time, t_philo *philo, int i)
 {
-	if (flag_check(philo->end_flag) == DOWN)
+	if (i == DOWN && flag_check(philo->end_flag) == DOWN)
 	{
 		pthread_mutex_lock(philo->print);
-		printf("%ld %d %s\n", time, philo->nb, s);
+		printf("%ld %d %s\n", time / 1000, philo->nb, s);
+		pthread_mutex_unlock(philo->print);
+	}
+	else if (i == UP)
+	{
+		pthread_mutex_lock(philo->print);
+		printf("%ld %d %s\n", time / 1000, philo->nb, s);
+		pthread_mutex_unlock(philo->print);
+	}
+	else if (i == ERR)
+	{
+		pthread_mutex_lock(philo->print);
+		printf("%s\n", s);
 		pthread_mutex_unlock(philo->print);
 	}
 	return ;
 }
+
+
 
 long	get_time(t_mutex *t_lock)
 {
@@ -55,29 +69,6 @@ long	get_time(t_mutex *t_lock)
 	return (current_time - start_time);
 }
 
-void	unlock_both(t_philo *philo)
-{
-	pthread_mutex_unlock(philo->l_fork);
-	pthread_mutex_unlock(philo->r_fork);
-}
 
-int	local_end_check(t_input *data)
-{
-	int	i ;
-	int	j;
 
-	i = 0;
-	j = 0;
-	while (i < data->nb_of_philos)
-	{
-		if (flag_check(&data->group[i].local_end) == UP)
-			j++;
-		i++;
-	}
-	if (j == i)
-	{
-		flag_set(&data->end_flag, 1);
-		return (ERROR);
-	}
-	return (SUCCESS);
-}
+

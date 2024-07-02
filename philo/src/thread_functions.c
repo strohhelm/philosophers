@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:06:52 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/07/01 15:06:54 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/07/02 18:41:16 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,24 @@ void	lock(pthread_mutex_t *fork, t_philo *p)
 {
 	pthread_mutex_lock(fork);
 	if (flag_check(p->end_flag) == DOWN)
-		safe_printf("has taken a fork", get_time(p->time), p);
+	{
+		safe_printf("has taken a fork", get_time(p->time), p, DOWN);
+	}
 	return ;
+}
+
+void	unlock_both(t_philo *philo)
+{
+	pthread_mutex_unlock(philo->l_fork);
+	pthread_mutex_unlock(philo->r_fork);
 }
 
 int	thinking(t_philo *philo, int i)
 {
-	safe_printf("is thinking", get_time(philo->time), philo);
+	long	time;
+
+	time = get_time(philo->time);
+	safe_printf("is thinking", time, philo, DOWN);
 	if (i == 1 && philo->nb % 2 == 0)
 	{
 		usleep(philo->eat_time / 2);
@@ -44,14 +55,18 @@ int	eating(t_philo *philo)
 	val_set(&philo->time_of_last_meal, time);
 	if (flag_check(philo->end_flag) == UP)
 		return (unlock_both(philo), ERROR);
-	safe_printf("is eating", time, philo);
+	safe_printf("is eating", time, philo, DOWN);
 	if (philo->times_must_eat > 0)
 	{
 		philo->times_must_eat--;
 	}
 	if (philo->eat_time == 0)
 		usleep(100);
-	usleep(philo->eat_time);
+	else
+	{
+		while (get_time(philo->time) - time <= philo->eat_time)
+			usleep(1);
+	}
 	if (philo->times_must_eat == 0)
 	{
 		flag_set(&philo->local_end, 1);
@@ -62,10 +77,14 @@ int	eating(t_philo *philo)
 
 int	sleeping(t_philo *philo)
 {
-	safe_printf("is sleeping", get_time(philo->time), philo);
+	long	time;
+
+	time = get_time(philo->time);
+	safe_printf("is sleeping", time, philo, DOWN);
 	if (philo->sleep_time == 0)
 		usleep(100);
 	else
-		usleep(philo->sleep_time);
+		while ((get_time(philo->time) - time) <= philo->sleep_time)
+			usleep(1);
 	return (SUCCESS);
 }

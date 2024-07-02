@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 10:08:16 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/26 16:41:58 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/07/02 18:30:09 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,13 +54,12 @@ int	wait_for_philos(t_input *data)
 	{
 		if (pthread_join(data->group[i].id, NULL) < 0)
 		{
-			safe_printf("pthread_join failed",
-				get_time(&data->time), &data->group[i]);
+			safe_printf("pthread_join failed", 0, NULL, ERR);
 			return (ERROR);
 		}
 		i++;
 	}
 	if (pthread_join(data->deathwatch, NULL) < 0)
-		return (printf("deathwatch_join failed %d\n", i), ERROR);
+		return (safe_printf("deathwatch_join fail %d\n", 0, NULL, ERR), ERROR);
 	return (SUCCESS);
 }

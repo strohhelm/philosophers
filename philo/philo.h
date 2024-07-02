@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 16:12:08 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/26 17:01:00 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/07/02 18:25:51 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ typedef enum e_succes {
 typedef enum e_flagstate {
 	DOWN,
 	UP,
+	ERR,
 }	t_flag_state;
 
 typedef struct s_protected_value {
@@ -94,7 +95,7 @@ void	wait_for_creation(t_input *data);
 int		*allocate_value_array(int nb_of_philos);
 void	zero_mutex_indicators(t_input *data);
 
-/*		destro_and_free					*/
+/*		destroy_and_free				*/
 
 void	ft_free(t_input *data, int j);
 void	p_dest(t_input *data, int i);
@@ -116,20 +117,20 @@ void	flag_set(t_value *flag, int value);
 /*		thread_functions				*/
 
 void	lock(pthread_mutex_t *fork, t_philo *p);
+void	unlock_both(t_philo *philo);
 int		thinking(t_philo *philo, int i);
 int		eating(t_philo *philo);
 int		sleeping(t_philo *philo);
-int		local_end_check(t_input *data);
 
 /*		thread_routines					*/
 
 void	*philos(void *arg);
 void	*death_watching(void *arg);
+int		local_end_check(t_input *data);
 
 /*		utils							*/
 int		ft_atoi(char *str);
-void	safe_printf(char *s, long time, t_philo *philo);
+void	safe_printf(char *s, long time, t_philo *philo, int i);
 long	get_time(t_mutex *t_lock);
-void	unlock_both(t_philo *philo);
 
 #endif

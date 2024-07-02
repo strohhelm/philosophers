@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 13:10:38 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/26 17:35:42 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/07/02 19:14:55 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,13 +56,34 @@ void	*death_watching(void *arg)
 			else if (local_end_check(data) == ERROR)
 				break ;
 			else if (val_get(&data->group[i].time_of_last_meal)
-				< get_time(&data->time) - data->time_to_die)
+				== time - data->time_to_die)
 			{
-				safe_printf("died", time, &data->group[i]);
 				flag_set(&data->end_flag, 1);
+				safe_printf("died", time, &data->group[i], UP);
 			}
 			i++;
 		}
 	}
 	return (NULL);
+}
+
+int	local_end_check(t_input *data)
+{
+	int	i ;
+	int	j;
+
+	i = 0;
+	j = 0;
+	while (i < data->nb_of_philos)
+	{
+		if (flag_check(&data->group[i].local_end) == UP)
+			j++;
+		i++;
+	}
+	if (j == i)
+	{
+		flag_set(&data->end_flag, 1);
+		return (ERROR);
+	}
+	return (SUCCESS);
 }

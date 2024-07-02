@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 12:41:39 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/26 16:22:37 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/07/02 18:26:54 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,12 +72,13 @@ int	create_threads(t_input *data)
 		if (pthread_create(&data->group[*nb].id, NULL, &philos,
 				(void *)&data->group[*nb]))
 			return (safe_printf("ERROR create thread\n", get_time(&data->time),
-					&data->group[i]), ft_free(data, j), 1);
+					&data->group[i], UP), ft_free(data, j), 1);
 		i++;
 		nb++;
 	}
 	if (pthread_create(&data->deathwatch, NULL, &death_watching, (void *)data))
-		return (printf("ERROR creating deathwatch\n"), ft_free(data, j), ERROR);
+		return (safe_printf("ERROR creating deathwatch", 0, NULL, ERR),
+			ft_free(data, j), ERROR);
 	wait_for_creation(data);
 	free(nb - i);
 	return (SUCCESS);

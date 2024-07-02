@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 16:32:58 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/24 14:32:37 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/07/02 19:12:47 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ int	val_get(t_value *value)
 int	flag_check(t_value *flag)
 {
 	pthread_mutex_lock(&flag->lock);
-	if (flag->value == 0)
+	if (flag->value == DOWN)
 		return (pthread_mutex_unlock(&flag->lock), DOWN);
 	return (pthread_mutex_unlock(&flag->lock), UP);
 }

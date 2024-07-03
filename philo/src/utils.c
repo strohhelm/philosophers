@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:45:43 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/07/02 18:33:29 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/07/03 15:17:37 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,6 @@ void	safe_printf(char *s, long time, t_philo *philo, int i)
 	return ;
 }
 
-
-
 long	get_time(t_mutex *t_lock)
 {
 	struct timeval	t;
@@ -68,7 +66,3 @@ long	get_time(t_mutex *t_lock)
 	pthread_mutex_unlock(t_lock);
 	return (current_time - start_time);
 }
-
-
-
-

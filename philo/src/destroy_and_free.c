@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 10:08:16 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/07/02 18:30:09 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/07/03 15:51:46 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ void	ft_free(t_input *data, int j)
 {
 	int	i;
 
+	flag_set(&data->end_flag, UP);
 	i = 0;
 	while (i < j)
 	{

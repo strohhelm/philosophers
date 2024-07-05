@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 16:12:08 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/07/02 18:25:51 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/07/05 15:50:57 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,6 @@
 # include <sys/time.h>
 # include <pthread.h>
 # include <unistd.h>
-
-// typedef struct timeval {
-// 		time_t		tv_sec;		/* seconds since Jan. 1, 1970 */
-// 		suseconds_t	tv_usec;	/* and microseconds */
-// }	t_time;
 
 typedef pthread_mutex_t	t_mutex;
 
@@ -58,13 +53,11 @@ typedef struct s_philosopher {
 	t_mutex		*r_fork;
 	long		eat_time;
 	long		sleep_time;
-	t_value		time_of_last_meal;
 	int			times_must_eat;
+	t_value		time_of_last_meal;
 	t_value		*end_flag;
-	t_value		local_end;
-	long		curr_time;
+	t_value		*finished;
 	t_mutex		*print;
-	t_mutex		*time;
 }	t_philo;
 
 typedef struct s_input {
@@ -74,12 +67,13 @@ typedef struct s_input {
 	long		time_to_sleep;
 	int			times_must_eat;
 	t_mutex		print;
-	t_mutex		time;
 	t_mutex		*forks;
 	int			*fork_init;
 	t_philo		*group;
 	pthread_t	deathwatch;
+	int			deathwatch_init;
 	t_value		end_flag;
+	t_value		finished;
 }	t_input;
 
 /*		allocating_and_initializing		*/
@@ -126,11 +120,11 @@ int		sleeping(t_philo *philo);
 
 void	*philos(void *arg);
 void	*death_watching(void *arg);
-int		local_end_check(t_input *data);
 
 /*		utils							*/
 int		ft_atoi(char *str);
-void	safe_printf(char *s, long time, t_philo *philo, int i);
-long	get_time(t_mutex *t_lock);
+int		safe_printf(char *s, t_philo *philo, int i);
+long	get_time(void);
+void	val_increase(t_value *value);
 
 #endif

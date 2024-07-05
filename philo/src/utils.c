@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:45:43 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/07/03 15:17:37 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/07/05 15:33:14 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,40 +29,47 @@ int	ft_atoi(char *str)
 	return (ms);
 }
 
-void	safe_printf(char *s, long time, t_philo *philo, int i)
+int	safe_printf(char *s, t_philo *philo, int i)
 {
+	long	time;
+	int		state;
+
+	pthread_mutex_lock(philo->print);
+	time = get_time();
+	state = ERROR;
 	if (i == DOWN && flag_check(philo->end_flag) == DOWN)
 	{
-		pthread_mutex_lock(philo->print);
 		printf("%ld %d %s\n", time / 1000, philo->nb, s);
-		pthread_mutex_unlock(philo->print);
+		state = SUCCESS;
 	}
 	else if (i == UP)
 	{
-		pthread_mutex_lock(philo->print);
 		printf("%ld %d %s\n", time / 1000, philo->nb, s);
-		pthread_mutex_unlock(philo->print);
 	}
 	else if (i == ERR)
 	{
-		pthread_mutex_lock(philo->print);
 		printf("%s\n", s);
-		pthread_mutex_unlock(philo->print);
 	}
-	return ;
+	pthread_mutex_unlock(philo->print);
+	return (state);
 }
 
-long	get_time(t_mutex *t_lock)
+long	get_time(void)
 {
 	struct timeval	t;
 	static long		start_time = 0;
 	long			current_time;
 
-	pthread_mutex_lock(t_lock);
 	gettimeofday(&t, NULL);
 	if (start_time == 0)
 		start_time = t.tv_sec * 1000000 + (long)t.tv_usec;
 	current_time = t.tv_sec * 1000000 + (long)t.tv_usec;
-	pthread_mutex_unlock(t_lock);
 	return (current_time - start_time);
+}
+
+void	val_increase(t_value *value)
+{
+	pthread_mutex_lock(&value->lock);
+	value->value += 1;
+	pthread_mutex_unlock(&value->lock);
 }

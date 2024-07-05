@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 12:41:39 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/07/02 18:26:54 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/07/05 15:39:11 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 int	allocate_stuff(t_input *data)
 {
+	get_time();
 	if (data->times_must_eat == 0)
 		return (ERROR);
 	data->group = (t_philo *)malloc(sizeof(t_philo) * data->nb_of_philos);
@@ -28,9 +29,9 @@ int	allocate_stuff(t_input *data)
 	zero_mutex_indicators(data);
 	if (pthread_mutex_init(&data->print, NULL))
 		return (free(data->group), free(data->forks), p_dest(data, 0), ERROR);
-	if (pthread_mutex_init(&data->time, NULL))
-		return (free(data->group), free(data->forks), p_dest(data, 1), ERROR);
 	if (pthread_mutex_init(&data->end_flag.lock, NULL))
+		return (free(data->group), free(data->forks), p_dest(data, 1), ERROR);
+	if (pthread_mutex_init(&data->finished.lock, NULL))
 		return (free(data->group), free(data->forks), p_dest(data, 2), ERROR);
 	if (init_rest_mutexes(data) != SUCCESS)
 		return (ERROR);
@@ -47,9 +48,6 @@ int	init_rest_mutexes(t_input *data)
 		if (pthread_mutex_init(&data->forks[i], NULL))
 			return (printf("ERROR create mutex %d\n", i), ft_free(data, i), 1);
 		data->fork_init[i] = 1;
-		if (pthread_mutex_init(&data->group[i].local_end.lock, NULL))
-			return (printf("ERROR create mutex %d\n", i), ft_free(data, i), 1);
-		data->group[i].local_end.init_flag = 1;
 		if (pthread_mutex_init(&data->group[i].time_of_last_meal.lock, NULL))
 			return (printf("ERROR create mutex %d\n", i), ft_free(data, i), 1);
 		data->group[i].time_of_last_meal.init_flag = 1;
@@ -66,20 +64,22 @@ int	create_threads(t_input *data)
 
 	i = 0;
 	j = data->nb_of_philos;
+	get_time();
 	nb = allocate_value_array(data->nb_of_philos);
 	while (i < data->nb_of_philos)
 	{
 		if (pthread_create(&data->group[*nb].id, NULL, &philos,
 				(void *)&data->group[*nb]))
-			return (safe_printf("ERROR create thread\n", get_time(&data->time),
-					&data->group[i], UP), ft_free(data, j), 1);
+			return (safe_printf("ERROR create thread\n",
+					&data->group[i], UP), i);
 		i++;
 		nb++;
 	}
-	if (pthread_create(&data->deathwatch, NULL, &death_watching, (void *)data))
-		return (safe_printf("ERROR creating deathwatch", 0, NULL, ERR),
-			ft_free(data, j), ERROR);
 	wait_for_creation(data);
+	if (pthread_create(&data->deathwatch, NULL, &death_watching, (void *)data))
+		return (safe_printf("ERROR creating deathwatch", &data->group[0], ERR),
+			ft_free(data, j), ERROR);
+	data->deathwatch_init = 1;
 	free(nb - i);
 	return (SUCCESS);
 }
@@ -88,8 +88,8 @@ int	init_group(t_input *data)
 {
 	int	i;
 
-	i = 0;
-	while (i < data->nb_of_philos)
+	i = -1;
+	while (++i < data->nb_of_philos)
 	{
 		data->group[i].l_fork = &data->forks[i - 1];
 		if (i == 0)
@@ -102,10 +102,9 @@ int	init_group(t_input *data)
 		data->group[i].times_must_eat = data->times_must_eat;
 		data->group[i].end_flag = &data->end_flag;
 		data->group[i].print = &data->print;
-		data->group[i].time = &data->time;
-		flag_set(&data->group[i].local_end, 0);
-		i++;
+		data->group[i].finished = &data->finished;
 	}
-	flag_set(&data->end_flag, 0);
+	data->end_flag.value = 0;
+	data->finished.value = 0;
 	return (SUCCESS);
 }

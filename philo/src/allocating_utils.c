@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 12:55:51 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/06/26 16:42:59 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/07/05 11:09:17 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,8 @@ void	zero_mutex_indicators(t_input *data)
 	while (i < data->nb_of_philos)
 	{
 		data->fork_init[i] = 0;
-		data->group[i].local_end.init_flag = 0;
 		data->group[i].time_of_last_meal.init_flag = 0;
 		i++;
 	}
+	data->deathwatch_init = 0;
 }

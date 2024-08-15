@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:45:43 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/07/05 16:05:30 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/08/15 13:57:20 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	ft_atoi(char *str)
 {
-	int	ms;
+	int		ms;
 
 	if (!str)
 		return (-1);

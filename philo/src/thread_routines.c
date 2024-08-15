@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 13:10:38 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/07/05 15:34:30 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/07/05 16:32:17 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	*death_watching(void *arg)
 			{
 				pthread_mutex_lock(&data->print);
 				flag_set(&data->end_flag, UP);
-				printf("%ld %d died\n", time / 1000, i + 1);
+				printf("%ld %d died\n", get_time() / 1000, i + 1);
 				pthread_mutex_unlock(&data->print);
 			}
 		}

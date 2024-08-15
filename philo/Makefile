@@ -17,12 +17,12 @@ OBJS	:= $(patsubst src/%.c, obj/%.o,$(CFILES))
 all:  $(NAME)
 	
 $(NAME): $(OBJS) 
-	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME) -O0 -g
+	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 	@echo MAKING philo...
 
 obj/%.o: src/%.c
 	@mkdir -p $(dir $@)
-	@$(CC) $(CFLAGS) -o $@ -c $^ -O0 -g
+	@$(CC) $(CFLAGS) -o $@ -c $^
 
 clean:
 	@rm -rf obj

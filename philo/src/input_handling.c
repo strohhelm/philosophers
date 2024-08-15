@@ -6,7 +6,7 @@
 /*   By: pstrohal <pstrohal@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:40:11 by pstrohal          #+#    #+#             */
-/*   Updated: 2024/08/15 13:57:55 by pstrohal         ###   ########.fr       */
+/*   Updated: 2024/08/15 14:19:42 by pstrohal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ int	validate_argv(int argc, char **argv)
 	while (i < argc)
 	{
 		s = argv[i];
-
 		if (!*s)
 			return (ERROR);
 		while (*s)
@@ -37,9 +36,6 @@ int	validate_argv(int argc, char **argv)
 
 int	initialize_input(int argc, char **argv, t_input *data)
 {
-	int err;
-
-	err = SUCCESS;
 	if (validate_argv(argc, argv) != SUCCESS)
 		return (ERROR);
 	data->nb_of_philos = ft_atoi(argv[1]);
